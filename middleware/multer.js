@@ -1,15 +1,10 @@
- import multer  from "multer"
+import multer from "multer";
 
- let storage = multer.diskStorage({
-   destination : (req, file, cb)=>{
-    cb(null , "./public")
-   },
-   filename :(rea, file , cb)=>{
-    cb(null, file.originalname)
-   }
- })
+const storage = multer.memoryStorage();
 
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB for videos
+});
 
- const upload = multer({storage})
- 
- export default upload 
+export default upload;

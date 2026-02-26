@@ -95,7 +95,7 @@ export const editCourse = async (req, res) => {
       isPublished,
     };
     if (req.file) {
-      const thumbnail = await uploadOnCloudinary(req.file.path);
+      const thumbnail = await uploadOnCloudinary(req.file);
       updateData.thumbnail = thumbnail;
     }
 
@@ -214,7 +214,7 @@ export const editLecture = async (req, res) => {
       });
     }
     if (req.file) {
-      const videoUrl = await uploadOnCloudinary(req.file.path);
+      const videoUrl = await uploadOnCloudinary(req.file);
       lecture.videoUrl = videoUrl;
     }
     if (lectureTitle) {
