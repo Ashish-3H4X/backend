@@ -1,40 +1,34 @@
-import { response } from "express"
-import User from "../model/userModel.js"
-import uploadOnCloudinary from "../config/cloudinary.js"
-
-
-export const getCurrentUser = async (req , res) => {
+export const updateProfile = async (req, res) => {
   try {
-     const user = await User.findById(req.userId ).select("-password")
-     if(!user){
-      return res.status(400).json({message:"User not found "})
-     }
-     return res.status(200).json(user)
-  } catch (error) {
-      return res.status(500).json({ message: `GetCurrentUserError: ${error.message}` });
-  }
-}
+    const userId = req.userId;
+    const { description, name } = req.body;
 
+    const updateData = {
+      name,
+      description,
+    };
 
-
-export const updateProfile = async(req,res)=>{
-  try {
-      const userId = req.userId
-    const {description , name } = req.body
-    let photoUrl
-    if(req.file){
-      photoUrl = await uploadOnCloudinary(req.file.path)
-
+    if (req.file) {
+      const photoUrl = await uploadOnCloudinary(req.file.path);
+      updateData.photoUrl = photoUrl;
     }
-    const user = await User.findByIdAndUpdate(userId , {name , description, photoUrl})
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    );
+
     if (!user) {
-      return res.status(200).json({message:"User not Found"})
-      
+      return res.status(404).json({ message: "User not found" });
     }
-     await user.save()
-    return res.status(200).json(user)
+
+    return res.status(200).json(user);
 
   } catch (error) {
-     return res.status(500).json({ message: `Update profile error : ${error.message}` }); 
+    console.log("Profile Update Error:", error);
+    return res.status(500).json({
+      message: `Update profile error: ${error.message}`,
+    });
   }
-}
+};
