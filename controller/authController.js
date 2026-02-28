@@ -48,7 +48,7 @@ let token  = await genToken(user._id)
    res.cookie("token" ,token,{
     httpOnly:true,
     secure:true,
-    sameSite:"strict",
+    sameSite:"none",
     maxAge:7*24*60*60*1000
    })
    return res.status(201).json(user)
@@ -83,7 +83,7 @@ let token  = await genToken(user._id)
    res.cookie("token" ,token,{
     httpOnly:true,
     secure:true,
-    sameSite:"strict",
+    sameSite:"none",
     maxAge:7*24*60*60*1000
    })
    return res.status(200).json(user)
@@ -93,14 +93,28 @@ let token  = await genToken(user._id)
   }
 }
 
-export const logout = async(req, res)=>{
+export const logout = async (req, res) => {
   try {
-     await res.clearCookie("token")
-       return res.status(200).json({message:"LogOut Successfully"})
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    return res.status(200).json({ message: "LogOut Successfully" });
+
   } catch (error) {
-    return res.status(500).json({message:`LogOut Error${error}`})
+    return res.status(500).json({ message: `LogOut Error ${error}` });
   }
-}
+};
+// export const logout = async(req, res)=>{
+//   try {
+//      await res.clearCookie("token")
+//        return res.status(200).json({message:"LogOut Successfully"})
+//   } catch (error) {
+//     return res.status(500).json({message:`LogOut Error${error}`})
+//   }
+// }
 
 export const sendOTP = async(req, res) =>{
   try {
@@ -180,7 +194,7 @@ export const googleAuthSignup = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true, // set false if testing locally
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -203,7 +217,7 @@ export const googleAuthSignin = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true, // set false if testing locally
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
